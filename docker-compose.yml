@@ -19,7 +19,10 @@ services:
       - db
     networks:
       - app-network
+    command: >
+      sh -c './wait-for-it.sh db:5432 -- java -jar /usr/app/mfa-service-0.0.1-SNAPSHOT.jar'
 
+#the command above is used to wait for the database to be ready before starting the service
 #    Some configurations for the service which provide some horizontal scaling
 #   deploy:
 #     replicas: 3
@@ -30,7 +33,6 @@ services:
 #     restart_policy:
 #       condition: on-failure
 
-
   db:
     image: postgres:latest
     container_name: postgres_db
@@ -38,8 +40,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: nexo
-      POSTGRESQL_USER: postgres
-      POSTGRESQL_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
