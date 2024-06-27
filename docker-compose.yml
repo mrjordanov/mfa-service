@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  mfa-service:
+    image: mfa-service:latest
+    container_name: mfa-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRESQL_SERVER: db
+      POSTGRESQL_PORT: 5432
+      POSTGRESQL_DATABASE: nexo
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+#    Some configurations for the service for horizontal scaling
+#   deploy:
+#     replicas: 3
+#     resources:
+#       limits:
+#         cpus: '0.50'
+#         memory: 512M
+#     restart_policy:
+#       condition: on-failure
+
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: nexo
+      POSTGRESQL_USER: postgres
+      POSTGRESQL_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
