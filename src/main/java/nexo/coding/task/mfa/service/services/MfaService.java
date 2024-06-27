@@ -20,7 +20,7 @@ public class MfaService {
 
     private final MfaTokenRepository mfaTokenRepository;
     private final MfaTokenGenerator mfaTokenGenerator;
-    private final MailServerMock mailServerMock;
+    private final MailService mailService;
 
     @Transactional
     public void sendMfaCode(String email) throws CodedException {
@@ -45,7 +45,7 @@ public class MfaService {
         MfaToken token = mfaTokenGenerator.generateMfaTokenWithCode();
         log.info("Generated MFA token");
         token.setEmail(email);
-        boolean isSuccessful = mailServerMock.sendEmailWithMfaCode();
+        boolean isSuccessful = mailService.sendEmailWithMfaCode();
         if (!isSuccessful) {
             throw new CodedException(ErrorCode.MFA_CODE_DELIVERY_FAILED, email);
         }
@@ -63,7 +63,6 @@ public class MfaService {
     }
 
     private boolean isTokenValid(MfaToken token) {
-        LocalDateTime now = LocalDateTime.now();
-        return token.getExpirationTime().isAfter(now) && token.getTimeOfDelivery() != null;
+        return token.getExpirationTime().isAfter(LocalDateTime.now()) && token.getTimeOfDelivery() != null;
     }
 }

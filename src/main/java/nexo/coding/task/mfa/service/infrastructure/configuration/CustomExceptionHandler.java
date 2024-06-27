@@ -32,12 +32,12 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDto<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
+        String collectedErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-        log.error(ErrorCode.VALIDATION_ERROR.toMessage(message));
+        log.error(ErrorCode.VALIDATION_ERROR.toMessage(collectedErrors));
 
-        return getResponse(HttpStatus.BAD_REQUEST, fail(ErrorCode.VALIDATION_ERROR.getCode(), ErrorCode.VALIDATION_ERROR.toMessage(message)));
+        return getResponse(HttpStatus.BAD_REQUEST, fail(ErrorCode.VALIDATION_ERROR.getCode(), ErrorCode.VALIDATION_ERROR.toMessage(collectedErrors)));
     }
 
     private ResponseEntity<ResponseDto<Void>> getResponse(HttpStatusCode status, ResponseDto<Void> content) {

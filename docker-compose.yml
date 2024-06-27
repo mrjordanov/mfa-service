@@ -20,7 +20,7 @@ services:
     networks:
       - app-network
 
-#    Some configurations for the service for horizontal scaling
+#    Some configurations for the service which provide some horizontal scaling
 #   deploy:
 #     replicas: 3
 #     resources:

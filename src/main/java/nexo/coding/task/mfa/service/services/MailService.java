@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class MailServerMock {
+public class MailService {
 
     private static final int MAX_RETRIES = 3;
     private final Random random = new Random();

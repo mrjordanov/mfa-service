@@ -38,7 +38,7 @@ class MfaServiceTest {
     @Autowired
     private MfaTokenRepository mfaTokenRepository;
     @MockBean
-    private MailServerMock mailServerMock;
+    private MailService mailService;
     @MockBean
     private MfaTokenGenerator mfaTokenGenerator;
 
@@ -49,7 +49,7 @@ class MfaServiceTest {
         MfaToken token = MfaToken.create(CODE, TOKEN_EXPIRATION_TIME);
 
         when(mfaTokenGenerator.generateMfaTokenWithCode()).thenReturn(token);
-        when(mailServerMock.sendEmailWithMfaCode()).thenReturn(true);
+        when(mailService.sendEmailWithMfaCode()).thenReturn(true);
 
         mfaService.sendMfaCode(TEST_MAIL);
 
@@ -67,7 +67,7 @@ class MfaServiceTest {
         MfaToken token = MfaToken.create(CODE, TOKEN_EXPIRATION_TIME);
 
         when(mfaTokenGenerator.generateMfaTokenWithCode()).thenReturn(token);
-        when(mailServerMock.sendEmailWithMfaCode()).thenReturn(false);
+        when(mailService.sendEmailWithMfaCode()).thenReturn(false);
 
         assertThrows(CodedException.class, () -> mfaService.sendMfaCode(TEST_MAIL));
 
@@ -82,7 +82,7 @@ class MfaServiceTest {
 
         MfaToken newToken = MfaToken.create(NEW_CODE, TOKEN_EXPIRATION_TIME);
         when(mfaTokenGenerator.generateMfaTokenWithCode()).thenReturn(newToken);
-        when(mailServerMock.sendEmailWithMfaCode()).thenReturn(true);
+        when(mailService.sendEmailWithMfaCode()).thenReturn(true);
 
         mfaService.sendMfaCode(EMAIL);
 
